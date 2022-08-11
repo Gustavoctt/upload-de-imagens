@@ -31,7 +31,9 @@ export function CardList({ cards }: CardsProps): JSX.Element {
 
   return (
     <>
-      <SimpleGrid>
+      <SimpleGrid
+        columns={[3]} spacing={['40px']}
+      >
         {cards &&        
           cards.map(card => {
             return(
@@ -44,11 +46,11 @@ export function CardList({ cards }: CardsProps): JSX.Element {
         })}
       </SimpleGrid>
 
-      {/* <ModalViewImage 
+      <ModalViewImage 
         isOpen={isOpen}
         onClose={onClose}
         imgUrl={selectedImage}
-      /> */}
+      />
     </>
   );
 }

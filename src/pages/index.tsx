@@ -54,17 +54,17 @@ export default function Home(): JSX.Element {
     }
   }, [data]);
 
-  // if(isLoading){
-  //   return(
-  //     <Loading />
-  //   )
-  // }
+  if(isLoading){
+    return(
+      <Loading />
+    )
+  }
 
-  // if(isError){
-  //   return(
-  //     <Error />
-  //   )
-  // }
+  if(isError){
+    return(
+      <Error />
+    )
+  }
   return (
     <>
       <Header />
