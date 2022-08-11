@@ -8,17 +8,28 @@ import { api } from '../services/api';
 import { Loading } from '../components/Loading';
 import { Error } from '../components/Error';
 
+interface Card {
+  title: string;
+  description: string;
+  url: string;
+  ts: string;
+  id: string;
+}
+
+type FetchImageProps = {
+  data: Card[];
+  after: string | null;
+}
+
 export default function Home(): JSX.Element {
-  const getImages = async ({ pageParam = null }): Promise<any> => {
-    const { data } = await api('/api/images', {
-      params: {
-        after: pageParam
-      }
-    })
-    return data
+  async function fetchImages({ pageParam = null }){
+      const { data } = await api.get(`/api/images`, {
+        params: {
+          after: pageParam
+        }
+      })
+      return data;
   }
-   
-  
   
   const {
     data,
@@ -28,28 +39,32 @@ export default function Home(): JSX.Element {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery(
-    'images', getImages, {
-      getNextPageParam: lastPage => lastPage?.after || null
+    'images', fetchImages, {
+      getNextPageParam:(lastPage, Allpages) => lastPage?.after || null
     }
   );
+
+
   const formattedData = useMemo(() => {
-    const formatted = data?.pages.flatMap(imageData => {
-      return imageData.data.flat()
-    })
-    return formatted;
+    if(data !== undefined){
+      const formatted = data?.pages.flatMap(imageData => {
+        return imageData.data.flat()
+      })
+      return formatted;
+    }
   }, [data]);
 
-  if(isLoading){
-    return(
-      <Loading />
-    )
-  }
+  // if(isLoading){
+  //   return(
+  //     <Loading />
+  //   )
+  // }
 
-  if(isError){
-    return(
-      <Error />
-    )
-  }
+  // if(isError){
+  //   return(
+  //     <Error />
+  //   )
+  // }
   return (
     <>
       <Header />
