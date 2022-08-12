@@ -12,10 +12,11 @@ interface FormAddImageProps {
 }
 
 interface NewImageData {
-  url: string;
+  url?: string;
   title: string;
   description: string;
 }
+
 
 export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState('');
@@ -77,7 +78,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   } = useForm();
   const { errors } = formState;
 
-  const onSubmit = async (data: Record<string, unknown>): Promise<void> => {
+  const onSubmit = async (data: NewImageData): Promise<void> => {
     try {
       if(!imageUrl){
         toast({
@@ -87,17 +88,30 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
         })
         return;
       }
-      await mutation.mutateAsync('');
+      // TODO EXECUTE ASYNC MUTATION
+      await mutation.mutateAsync(data);
+
+      // TODO SHOW SUCCESS TOAST
       toast({
         status: 'success',
         title: 'Imagem cadastrada',
         description: 'Sua imagem foi cadastrada com sucesso.'
       })
-      // TODO EXECUTE ASYNC MUTATION
-      // TODO SHOW SUCCESS TOAST
+      
     } catch {
+      toast({
+        status: 'error',
+        title: 'Falha no cadastro',
+        description: 'Ocorreu um erro ao tentar cadastrar a sua imagem.'
+      })
       // TODO SHOW ERROR TOAST IF SUBMIT FAILED
     } finally {
+      reset()
+
+      setImageUrl('')
+      setLocalImageUrl('')
+
+      closeModal()
       // TODO CLEAN FORM, STATES AND CLOSE MODAL
     }
   };
@@ -111,8 +125,10 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
           setLocalImageUrl={setLocalImageUrl}
           setError={setError}
           trigger={trigger}
-          {...register('image', formValidations.image)}
+          //TODO SEND IMAGE ERRORS
           error={errors.image}
+          // TODO REGISTER IMAGE INPUT WITH VALIDATIONS
+          {...register('image', formValidations.image)}
         />
 
         <TextInput
